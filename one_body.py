@@ -12,40 +12,31 @@ class SpaceShip:
         self.first_cycle = True
         self.time_multiplier = time_multiplier
 
-    def updatePosition(self):
+    def updatePosition(self, xForce, yForce):
         """
         updates the position of the spaceship given x and y forces
         """
 
+        self.xAcc = xForce/self.mass
+        self.yAcc = yForce/self.mass
+
         if self.first_cycle:
-            distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
-
-            xForce = -self.x*self.mass/distance**3
-            yForce = -self.y*self.mass/distance**3
-
-            self.xAcc = xForce/self.mass
-            self.yAcc = yForce/self.mass
 
             self.xVel += self.xAcc*self.time_multiplier/2
             self.yVel += self.yAcc*self.time_multiplier/2
             self.first_cycle = False
 
         else:
-            self.x += self.xVel*self.time_multiplier
-            self.y += self.yVel*self.time_multiplier
-
-            # calculate force HERE before the next step- the forces are incorrect because
-            # they're passed before those new x and y values are calculated
-            distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
-
-            xForce = -self.x*self.mass/distance**3
-            yForce = -self.y*self.mass/distance**3
 
             self.xAcc = xForce/self.mass
             self.yAcc = yForce/self.mass
         
             self.xVel += self.xAcc*self.time_multiplier
             self.yVel += self.yAcc*self.time_multiplier
+
+        # x and y's are pre-calculated for next cycle relative to Feynman's method so we calculate the forces from the right place
+        self.x += self.xVel*self.time_multiplier
+        self.y += self.yVel*self.time_multiplier
 
     def getProperties(self):
         return f"x: {round(self.x, 3)}, x vel: {round(self.xVel, 3)}, x acc: {round(self.xAcc, 3)}, y: {round(self.y, 3)}, y vel: {round(self.yVel, 3)}, y acc: {round(self.yAcc, 3)}"
@@ -88,7 +79,12 @@ distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 while True: # time < 2.4:
     print('\n-------------------------------\n')
 
-    my_space_ship.updatePosition()
+    distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
+
+    xForce = -my_space_ship.getX()*my_space_ship.getMass()/distance**3
+    yForce = -my_space_ship.getY()*my_space_ship.getMass()/distance**3
+
+    my_space_ship.updatePosition(xForce=xForce, yForce=yForce)
 
     distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 
