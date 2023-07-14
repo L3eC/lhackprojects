@@ -80,9 +80,9 @@ def display_point(x, y):
             print(' '.join(row))
     
 
-my_space_ship = SpaceShip(start_x=0.5, start_y=0, start_y_vel=1.630, time_multiplier=0.1)
+my_space_ship = SpaceShip(start_x=0.5, start_y=0, start_y_vel=1.9, time_multiplier=0.1)
 time = 0
-time_mult = 0.1
+time_mult = 0.0001
 distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 # let's have 0, 0 be the gravity thingy
 while True: # time < 2.4:
@@ -94,7 +94,7 @@ while True: # time < 2.4:
 
     # print(f"time: {round(time, 3)}, {my_space_ship.getProperties()}, distance: {round(distance, 3)}, 1/distance^3: {round(1/distance**3, 3)}")
     
-    display_point(int(my_space_ship.getX()), int(my_space_ship.getY()))
+    display_point(int(2*my_space_ship.getX()), int(2*my_space_ship.getY()))
 
-    sleep(1/15)
+    sleep(1/60)
     time += time_mult
