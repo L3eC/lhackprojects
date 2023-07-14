@@ -1,0 +1,1 @@
+# My (Leo's) project to hopefully make a nice clean codebase with new features and stuff for the next season (and/or the 2023 chairbot). I'm gonna see if I can skip robotcontainer like some other teams.
