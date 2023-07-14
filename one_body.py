@@ -18,6 +18,14 @@ class SpaceShip:
         """
 
         if self.first_cycle:
+            distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
+
+            xForce = -self.x*self.mass/distance**3
+            yForce = -self.y*self.mass/distance**3
+
+            self.xAcc = xForce/self.mass
+            self.yAcc = yForce/self.mass
+
             self.xVel += self.xAcc*self.time_multiplier/2
             self.yVel += self.yAcc*self.time_multiplier/2
             self.first_cycle = False
@@ -32,7 +40,6 @@ class SpaceShip:
 
             xForce = -self.x*self.mass/distance**3
             yForce = -self.y*self.mass/distance**3
-
 
             self.xAcc = xForce/self.mass
             self.yAcc = yForce/self.mass
@@ -78,16 +85,16 @@ time = 0
 time_mult = 0.1
 distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 # let's have 0, 0 be the gravity thingy
-while time < 2.4:
+while True: # time < 2.4:
     print('\n-------------------------------\n')
 
     my_space_ship.updatePosition()
 
     distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 
-    print(f"time: {round(time, 3)}, {my_space_ship.getProperties()}, distance: {round(distance, 3)}, 1/distance^3: {round(1/distance**3, 3)}")
+    # print(f"time: {round(time, 3)}, {my_space_ship.getProperties()}, distance: {round(distance, 3)}, 1/distance^3: {round(1/distance**3, 3)}")
     
-    # display_point(int(my_space_ship.getX()), int(my_space_ship.getY()))
+    display_point(int(my_space_ship.getX()), int(my_space_ship.getY()))
 
     sleep(1/15)
     time += time_mult
