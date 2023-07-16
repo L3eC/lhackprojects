@@ -1,4 +1,5 @@
 from time import sleep
+import turtle
 
 class SpaceShip:
     
@@ -27,9 +28,6 @@ class SpaceShip:
             self.first_cycle = False
 
         else:
-
-            self.xAcc = xForce/self.mass
-            self.yAcc = yForce/self.mass
         
             self.xVel += self.xAcc*self.time_multiplier
             self.yVel += self.yAcc*self.time_multiplier
@@ -71,14 +69,15 @@ def display_point(x, y):
             print(' '.join(row))
     
 
-my_space_ship = SpaceShip(start_x=0.5, start_y=0, start_y_vel=1.9, time_multiplier=0.1)
+my_space_ship = SpaceShip(start_x=0, start_y=5, start_x_vel=0.1, time_multiplier=0.01)
+screen = turtle.getscreen()
+t = turtle.Turtle()
+t.shape(name="circle")
+t.speed("fastest")
 time = 0
-time_mult = 0.0001
 distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 # let's have 0, 0 be the gravity thingy
 while True: # time < 2.4:
-    print('\n-------------------------------\n')
-
     distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 
     xForce = -my_space_ship.getX()*my_space_ship.getMass()/distance**3
@@ -88,9 +87,4 @@ while True: # time < 2.4:
 
     distance = abs((my_space_ship.getX()**2 + my_space_ship.getY()**2))**(1/2)
 
-    # print(f"time: {round(time, 3)}, {my_space_ship.getProperties()}, distance: {round(distance, 3)}, 1/distance^3: {round(1/distance**3, 3)}")
-    
-    display_point(int(2*my_space_ship.getX()), int(2*my_space_ship.getY()))
-
-    sleep(1/60)
-    time += time_mult
+    t.goto(my_space_ship.getX()*50, my_space_ship.getY()*50)
