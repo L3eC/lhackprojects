@@ -42,17 +42,28 @@ class Body:
 class Simulator:
 
     def __init__(self, bodies: list[Body]):
+
         self.bodies = bodies
+        self.firstClicked = False
+        self.new_body_mass = 0
+        self.scale = 5
         self.screen = turtle.getscreen()
         self.screen.bgcolor("black")
         self.turtleBodyDict = {}
         colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+        turtle.onscreenclick(fun=lambda x, y: self.createBody(x, y))
+        turtle.onkey(key="w", fun=self.incrementBodyMass)
+
         for index, body in enumerate(bodies):
             self.turtleBodyDict[body] = turtle.Turtle()
             self.turtleBodyDict[body].color(colors[index])
             self.turtleBodyDict[body].speed("fastest")
+            # self.turtleBodyDict[body].shapesize(body.getMass()*0.0000000000001)
+            self.turtleBodyDict[body].shapesize(0.5)
+            self.turtleBodyDict[body].shape("circle")
 
     def cycle(self):
+        forces = []
         for body in self.bodies:
             xForce = yForce = 0
             for other_body in self.bodies:
@@ -60,19 +71,50 @@ class Simulator:
                     distance = ((body.getX() - other_body.getX())**2+(body.getY() - other_body.getY())**2)**(1/2)
                     xForce -= G*body.getMass()*other_body.getMass()*(body.getX() - other_body.getX())/distance**3
                     yForce -= G*body.getMass()*other_body.getMass()*(body.getY() - other_body.getY())/distance**3
+            forces.append((xForce, yForce))
             print("name: " + body.getName() + ", yForce: " + str(round(yForce, 20)) + ", y: " + str(round(body.getY(), 10)))
-            body.updatePosition(xForce=xForce*10000000000, yForce=yForce*10000000000)
+        
+        for index, body in enumerate(self.bodies):
+            body.updatePosition(xForce=forces[index][0], yForce=forces[index][1])
 
         self.draw()
 
-    def draw(self, scale=5):
-        for body in self.turtleBodyDict:
-            self.turtleBodyDict[body].goto(body.getX()*scale, body.getY()*scale)
+    def createBody(self, x, y):
+        if not self.firstClicked:
+            self.new_body_start_x = x
+            self.new_body_start_y = y
+            self.firstClicked = True
+        else:
+            self.bodies.append(Body(name="whatever", mass=self.new_body_mass, 
+                                    start_x=self.new_body_start_x/self.scale, start_y = self.new_body_start_y/self.scale,
+                                    vel_start_x=x-self.new_body_start_x, vel_start_y=y-self.new_body_start_y))
+
+            self.turtleBodyDict[self.bodies[-1]] = turtle.Turtle()
+            self.turtleBodyDict[self.bodies[-1]].speed("fastest")
+            self.turtleBodyDict[self.bodies[-1]].shapesize(0.5)
+            self.turtleBodyDict[self.bodies[-1]].shape("square")
+            self.turtleBodyDict[self.bodies[-1]].color("white")
+
+            self.new_body_mass = 0
+            self.firstClicked = False
+
+    def incrementBodyMass(self):
+        self.new_body_mass += 100
+        
+
+    def draw(self):
+        tempTurtleBodyDict = self.turtleBodyDict
+        for body in tempTurtleBodyDict:
+            tempTurtleBodyDict[body].goto(body.getX()*self.scale, body.getY()*self.scale)
+
     
-simulator = Simulator([Body(name="sun", mass=500, start_x=0, start_y=10, vel_start_x = -0.1, time_multiplier=0.001),
-                       Body(name="othersun", mass=500, start_x=0, start_y=-10, vel_start_x=0.1, time_multiplier=0.001),
-                       Body(name="planet", mass=0.1, start_x=0, start_y=50, vel_start_x=0.11, time_multiplier=0.001),
-                      Body(name="otherplanet", mass=0.1, start_x=0, start_y=0, vel_start_x=0.05, time_multiplier=0.001)])
+simulator = Simulator([Body(name="sun", mass=5000000000000, start_x=0, start_y=10, vel_start_x = -0.1, time_multiplier=0.001),
+                        Body(name="othersun", mass=5000000000000, start_x=0, start_y=-10, vel_start_x=0.1, time_multiplier=0.001),
+                        Body(name="planet", mass=100, start_x=0, start_y=50, vel_start_x=0.11, time_multiplier=0.001),
+                       Body(name="otherplanet", mass=100, start_x=0, start_y=0, vel_start_x=0.07, time_multiplier=0.001)])
+
+# simulator = Simulator([Body(name="sun", mass=1000, start_x=0, start_y=0, vel_start_x = 0, time_multiplier=0.001),
+#                       Body(name="planet", mass=1, start_x=0, start_y=50, vel_start_x = .1, time_multiplier=0.001)])
 
 while True:
     simulator.cycle()
