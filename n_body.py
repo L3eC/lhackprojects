@@ -45,7 +45,8 @@ class Simulator:
 
         self.bodies = bodies
         self.firstClicked = False
-        self.new_body_mass = 0
+        self.new_body_mass = 100
+        self.queued_body = None
         self.scale = 5
         self.screen = turtle.getscreen()
         self.screen.bgcolor("black")
@@ -63,6 +64,17 @@ class Simulator:
             self.turtleBodyDict[body].shape("circle")
 
     def cycle(self):
+
+        if not self.queued_body == None: 
+            self.bodies.append(self.queued_body)
+            self.turtleBodyDict[self.bodies[-1]] = turtle.Turtle()
+            self.turtleBodyDict[self.bodies[-1]].speed("fastest")
+            self.turtleBodyDict[self.bodies[-1]].shapesize(0.5)
+            self.turtleBodyDict[self.bodies[-1]].shape("square")
+            self.turtleBodyDict[self.bodies[-1]].color("white")
+            self.turtleBodyDict[self.bodies[-1]].penup()
+            self.queued_body = None
+
         forces = []
         for body in self.bodies:
             xForce = yForce = 0
@@ -84,22 +96,24 @@ class Simulator:
             self.new_body_start_x = x
             self.new_body_start_y = y
             self.firstClicked = True
+            # onPointerTurtle = turtle.Turtle()
+            # onPointerTurtle.penup()
+            # onPointerTurtle.goto(x, y)
+            # onPointerTurtle.color("white")
+            # onPointerTurtle.write(self.new_body_mass)
+
         else:
-            self.bodies.append(Body(name="whatever", mass=self.new_body_mass, 
+            self.queued_body = Body(name="whatever", mass=self.new_body_mass, 
                                     start_x=self.new_body_start_x/self.scale, start_y = self.new_body_start_y/self.scale,
-                                    vel_start_x=x-self.new_body_start_x, vel_start_y=y-self.new_body_start_y))
+                                    vel_start_x=(x-self.new_body_start_x)/500, vel_start_y=(y-self.new_body_start_y)/500, time_multiplier=0.001)
 
-            self.turtleBodyDict[self.bodies[-1]] = turtle.Turtle()
-            self.turtleBodyDict[self.bodies[-1]].speed("fastest")
-            self.turtleBodyDict[self.bodies[-1]].shapesize(0.5)
-            self.turtleBodyDict[self.bodies[-1]].shape("square")
-            self.turtleBodyDict[self.bodies[-1]].color("white")
 
-            self.new_body_mass = 0
             self.firstClicked = False
 
     def incrementBodyMass(self):
-        self.new_body_mass += 100
+        self.new_body_mass *= 100
+    
+    def decrementBodymass(self): self.new_body_mass /= 100
         
 
     def draw(self):
