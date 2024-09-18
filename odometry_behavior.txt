@@ -1,0 +1,11 @@
+When angle = 0 (straight ahead)
+
+In real robot:
+Forward is +X
+Right is +Y
+Clockwise is +angle
+
+In sim:
+Forward is +X
+RIght is -Y
+Clockwise is -angle
